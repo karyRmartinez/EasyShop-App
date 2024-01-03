@@ -2,15 +2,15 @@ package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
 import org.yearup.models.Product;
 
-import java.util.HashMap;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 // add the annotations to make this a REST controller -DONE✅
@@ -25,9 +25,15 @@ public class CategoriesController
     private CategoryDao categoryDao;
     private ProductDao productDao;
 
+@Autowired
+    public CategoriesController(CategoryDao categoryDao, ProductDao productDao) {
+        this.categoryDao = categoryDao;
+        this.productDao = productDao;
+    }
 
     // create an Autowired controller to inject the categoryDao and ProductDao ✅
-@Autowired
+
+
     // add the appropriate annotation for a get action ✅
     @GetMapping
     public List<Category> getAll()
@@ -50,6 +56,7 @@ public class CategoriesController
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
         // get a list of product by categoryId ✅
@@ -58,9 +65,11 @@ public class CategoriesController
     }
 
     // add annotation to call this method for a POST action ✅
-    @PostMapping()
+    @PostMapping
+    @RequestMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     // add annotation to ensure that only an ADMIN can call this function
-    public Category addCategory(@RequestBody Category category)
+    public Category addCategory(@RequestBody Category category, HttpServletResponse response)
     {
         // insert the category ✅
         try{
@@ -73,23 +82,21 @@ public class CategoriesController
 
     // ✅ add annotation to call this method for a PUT (update) action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
-    @PutMapping("{id}")
-    public HashMap<String, String> updateCategory(@PathVariable int id, @RequestBody Category category) {
+//    @PutMapping("{id}")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(path="/categories/{id}",method = RequestMethod.PUT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id ✅
     categoryDao.update(id, category);
 
-    HashMap<String, String> response = new HashMap<>();
-
-    response.put("Status", "Successful");
-    response.put("Message", "Category Updated Successfully");
-
-    return response;
 
 }
 
 
     // ✅add annotation to call this method for a DELETE action - the url path must include the categoryId
     @DeleteMapping("{categoryId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     // add annotation to ensure that only an ADMIN can call this function
     public void deleteCategory(@PathVariable int id) {
 
