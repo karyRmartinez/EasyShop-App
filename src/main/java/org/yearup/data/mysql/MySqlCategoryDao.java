@@ -2,7 +2,6 @@ package org.yearup.data.mysql;
 
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
 
@@ -120,7 +119,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
         }
 
         @Override
-        @DeleteMapping
+       //
         public void delete(int categoryId){
             // delete category
             String query = "Delete From categories Where id=?;";

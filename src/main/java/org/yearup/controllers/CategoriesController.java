@@ -82,21 +82,27 @@ public class CategoriesController
 
     // ✅ add annotation to call this method for a PUT (update) action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
-//    @PutMapping("{id}")
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(path="/categories/{id}",method = RequestMethod.PUT)
+    @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @RequestMapping(path="/categories/{id}",method = RequestMethod.PUT)
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id ✅
-    categoryDao.update(id, category);
+        try {
+            categoryDao.update(id, category);
+        }catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR," Error");
+        }
+
 
 
 }
 
 
     // ✅add annotation to call this method for a DELETE action - the url path must include the categoryId
-    @DeleteMapping("{categoryId}")
+    @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     // add annotation to ensure that only an ADMIN can call this function
     public void deleteCategory(@PathVariable int id) {
 
@@ -109,7 +115,7 @@ public class CategoriesController
 
             categoryDao.delete(id);
         }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "There was an ERROR!");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "ERROR!");
         }
 
     }
