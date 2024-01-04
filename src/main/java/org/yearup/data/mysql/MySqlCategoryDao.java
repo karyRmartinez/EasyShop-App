@@ -114,7 +114,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
 
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
-                e.printStackTrace();
+              throw new RuntimeException(e);
             }
         }
 
