@@ -13,6 +13,9 @@ import org.yearup.models.Product;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+
 // add the annotations to make this a REST controller -DONE✅
 @RestController
 // add the annotation to make this controller the endpoint for the following url ✅
@@ -43,20 +46,30 @@ public class CategoriesController
     }
 
     // add the appropriate annotation for a get action ✅
-    @GetMapping("/{categoryId}")
-    public Category getById(@PathVariable int id) {
-        System.out.println("category id" + id);
+    @GetMapping("/{id}")
+    public Category getById(@PathVariable int id, HttpServletResponse response) {
+
 
         // get the category by id ✅
        // return null;
-        return categoryDao.getById(id);
+//        return categoryDao.getById(id);
+        {
+            // get the category by id
+            Category c = categoryDao.getById(id);
+            if(c == null) {
+                response.setStatus(NOT_FOUND.value());
+            }
+            else{
+                response.setStatus(OK.value());
+            }
+            return categoryDao.getById(id);
+        }
 
     }
 
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
         // get a list of product by categoryId ✅
@@ -65,9 +78,10 @@ public class CategoriesController
     }
 
     // add annotation to call this method for a POST action ✅
-    @PostMapping
+
     @RequestMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     // add annotation to ensure that only an ADMIN can call this function
     public Category addCategory(@RequestBody Category category, HttpServletResponse response)
     {
@@ -109,7 +123,7 @@ public class CategoriesController
             var category = categoryDao.getById(id);
 
             if(category == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                throw new ResponseStatusException(NOT_FOUND);
 
             categoryDao.delete(id);
         }catch (Exception e){

@@ -30,7 +30,8 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
         ) {
             while (resultSet.next()) {
 
-                Category category = categoryShaper(resultSet);
+//                Category category = categoryShaper(resultSet);
+                Category category = new Category(resultSet.getInt("category_id"), resultSet.getString("name"), resultSet.getString("description"));
                 categories.add(category);
             }
         } catch (SQLException e) {
@@ -42,68 +43,62 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     @Override
     public Category getById(int categoryId) {
         // get category by id
-        String query = "Select * From categories Where category_id=?;";
-
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ) {
-            preparedStatement.setInt(1, categoryId);
-
-            try (
-                    ResultSet resultSet = preparedStatement.executeQuery();
-            ) {
-                if (resultSet.next()) {
-                    return categoryShaper(resultSet);
-                } else {
-                    System.out.printf("Category Not Found");
-                }
+        Category category = null;
+        String sql = """
+                SELECT * FROM categories
+                WHERE category_id = ?;
+                """;
+        try (Connection connection = getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                category = mapRow(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
+        return category;
     }
 
     @Override
     public Category create(Category category) {
         // create a new category
-        String query = "INSERT INTO categories(category_id, name, description) VALUES(?, ?, ?);";
+        String sql = """
+                INSERT INTO categories(name, description)
+                VALUES(?, ?);
+                """;
+        try(Connection connection =  getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, category.getName());
+            ps.setString(2, category.getDescription());
 
-        try (
-                Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query,
-                        Statement.RETURN_GENERATED_KEYS);
-        ) {
-            preparedStatement.setInt(1, category.getCategoryId());
-            preparedStatement.setString(2, category.getName());
-            preparedStatement.setString(3, category.getDescription());
+            int rowsAffected = ps.executeUpdate();
 
-            preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                // Retrieve the generated keys
+                ResultSet generatedKeys = ps.getGeneratedKeys();
 
-            try (
-                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            ) {
                 if (generatedKeys.next()) {
+                    // Retrieve the auto-incremented ID
                     int categoryId = generatedKeys.getInt(1);
+
+                    // get the newly inserted category
                     category.setCategoryId(categoryId);
-                    return category;
-                } else {
-                    System.out.println("Category Creation Failed");
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-
+            throw new RuntimeException(e);
         }
-        return null;
+        return category;
     }
         @Override
 //        @PutMapping
         public void update( int categoryId, Category category){
             // update category
-            String query = "Update categories Set name=?, description=? Where category_id=?;";
-
+            String query = """
+                    Update categories Set name=?, description=? Where category_id=?;
+                    """;
             try (
                     Connection connection = dataSource.getConnection();
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -122,17 +117,32 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
        //
         public void delete(int categoryId){
             // delete category
-            String query = "Delete From categories Where id=?;";
+            String sql = """
+                DELETE FROM categories
+                WHERE category_id = ?;
+                """;
+            try (Connection c = getConnection()) {
+                PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, categoryId);
 
-            try (
-                    Connection connection = dataSource.getConnection();
-                    PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ) {
-                preparedStatement.setInt(1, categoryId);
-                preparedStatement.executeUpdate();
+                ps.executeUpdate();
+                // Executes the given SQL statement, which may be an INSERT, UPDATE, or DELETE statement
+                // or an SQL statement that returns nothing, such as an SQL DDL statement.
+
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
+//            String query = "Delete From categories Where category_id=?;";
+//
+//            try (
+//                    Connection connection = dataSource.getConnection();
+//                    PreparedStatement preparedStatement = connection.prepareStatement(query);
+//            ) {
+//                preparedStatement.setInt(1, categoryId);
+//                preparedStatement.executeUpdate();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
 
         }
 
