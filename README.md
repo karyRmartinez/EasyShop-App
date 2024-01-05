@@ -40,7 +40,6 @@ The database folder contains a database script (create_database. sql). Open this
 git bash
 
 ## Screenshots
-**Website ScreenShot**
 <img src="RMImages/Postman-Screenshot.png" alt="Image Alt Text" style="width:400px; height:250px;">
 <img src="RMImages/Website-Screenshot.png" alt="Image Alt Text" style="width:400px; height:250px;">
 
