@@ -25,7 +25,7 @@ Clone the repo and install the dependencies.
 2. **Import the Postman Collection:**
 3. **Set Environment Variables:**
 4. **Run Requests:**
-<img src="" alt="Image Alt Text" style="width:400px; height:250px;">
+<img src="Postman-Screenshot.png" alt="Image Alt Text" style="width:400px; height:250px;">
 
 ## Other Technology Stack
 #### Workbench
