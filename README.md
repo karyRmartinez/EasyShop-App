@@ -17,9 +17,17 @@ The existing API code includes:
 Clone the repo and install the dependencies.
 
 ## Phases
-**Phase 1:** CategoriesController Implementation
-**Phase 2:** Product Search Functionality
-**Phase 3:** Shopping Cart Feature Implementation
+1 : **Phase** CategoriesController Implementation
+2 : **Phase** Product Search Functionality and Bugs 
+`
+        String sql = "SELECT * FROM products " +
+                "WHERE (category_id = ? OR ? = -1) " +
+                "AND (price <= ? OR ? = -1) " +
+                "   AND (price >= ? OR ? = -1) " +
+                "   AND (color = ? OR ? = '') ";``
+
+```
+3: **Phase** Shopping Cart Feature Implementation
 
 ## Testing with Postman
 - [Postman](https://www.postman.com/) installed on your machine.
