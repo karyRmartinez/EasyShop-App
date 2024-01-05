@@ -25,17 +25,24 @@ Clone the repo and install the dependencies.
 2. **Import the Postman Collection:**
 3. **Set Environment Variables:**
 4. **Run Requests:**
-<img src="Postman-Screenshot.png" alt="Image Alt Text" style="width:400px; height:250px;">
+<img src="PostmanTesting.png" alt="Image Alt Text" style="width:400px; height:250px;">
 
 ## Other Technology Stack
 #### Workbench
 The database folder contains a database script (create_database. sql). Open this script in MySql Workbench and execute it.
+| category_id   | name          | description  |
+| ------------- |:-------------:| -----:       |
+| 3             | home & kitchen| find...      |
+| 2             | fashion       | discover...  |
+| 1             | electronics   | Explore...   |
 
 #### Terminal
 git bash
 
 ## Screenshots
-Coming soon...
+**Website ScreenShot**
+<img src="Postman-Screenshot.png" alt="Image Alt Text" style="width:400px; height:250px;">
+<img src="Website-Screenshot.png" alt="Image Alt Text" style="width:400px; height:250px;">
 
 ## Project Status
 Active
