@@ -19,9 +19,13 @@ Clone the repo and install the dependencies.
 - 
 
 ## Technology Stack
-- Postman
-- Workbench
-- Terminal
+# Postman
+
+
+# Workbench
+The database folder contains a database script (create_database. sql). Open this script in MySql Workbench and execute it.
+
+# Terminal
 
 ## Screenshots
 Coming soon...
