@@ -26,7 +26,7 @@ Clone the repo and install the dependencies.
                 "   AND (price >= ? OR ? = -1) " +
                 "   AND (color = ? OR ? = '') ";``
 
-```
+
 3: **Phase** Shopping Cart Feature Implementation
 
 ## Testing with Postman
