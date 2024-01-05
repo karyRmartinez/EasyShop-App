@@ -9,6 +9,7 @@ import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
 import org.yearup.data.UserDao;
 import org.yearup.models.ShoppingCart;
+import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 
 import java.security.Principal;
@@ -91,27 +92,44 @@ public class ShoppingCartController
         }
     }
 
-//    @PostMapping()
-//    // https://localhost:8080/cart/products/15 (15 is the productId to be added
-//    public void addToCart(@PathVariable int productId, Principal principal, Authentication authentication){
-//        try{
-//            String userName = authentication.getName();
-//            User user = userDao.getByUserName(userName);
-//
-//            int userId = user.getId();
-//
-//            shoppingCartDao.addProductToCart(userId, productId);
-//        }catch (Exception e){
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "There was an error!");
-//        }
-//    }
+
 
     // add a PUT method to update an existing product in the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
+    @PutMapping("/products/{productId}")
+    public void updateCartItemQuantity(
+            @PathVariable(name = "productId") int productId,
+            @RequestBody ShoppingCartItem shoppingCartItem,
+            Principal principal) {
+        try {
+            String userName = principal.getName();
+            User user = userDao.getByUserName(userName);
+            int userId = user.getId();
 
-
+            if (shoppingCartDao.getByUserId(userId).contains(productId)) {
+                int newQuantity = shoppingCartItem.getQuantity();
+                shoppingCartDao.setQuantity(userId, productId, newQuantity);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found in the cart.");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart
+
+    @DeleteMapping
+    public void clearCart(Principal principal) {
+        try {
+            String userName = principal.getName();
+            User user = userDao.getByUserName(userName);
+            int userId = user.getId();
+            shoppingCartDao.clearCart(userId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
 
 }
