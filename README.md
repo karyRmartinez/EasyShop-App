@@ -16,8 +16,10 @@ The existing API code includes:
 ## Common setup
 Clone the repo and install the dependencies.
 
-## Features
-
+## Phases
+**Phase 1:** CategoriesController Implementation
+**Phase 2:** Product Search Functionality
+**Phase 3:** Shopping Cart Feature Implementation
 
 ## Testing with Postman
 - [Postman](https://www.postman.com/) installed on your machine.
